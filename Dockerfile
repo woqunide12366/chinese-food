@@ -2,9 +2,6 @@
 FROM node:20-slim AS builder
 WORKDIR /app
 
-# 使用国内 npm 镜像源
-RUN npm config set registry https://registry.npmmirror.com
-
 COPY package*.json ./
 RUN npm install
 
@@ -15,9 +12,7 @@ RUN npm run build
 FROM node:20-slim AS runner
 WORKDIR /app
 
-# 换 Debian 国内源 + 安装依赖
-RUN sed -i 's|deb.debian.org|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || sed -i 's|deb.debian.org|mirrors.tuna.tsinghua.edu.cn|g' /etc/apt/sources.list && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends python3 make g++ sqlite3 && \
     rm -rf /var/lib/apt/lists/*
 
@@ -27,8 +22,7 @@ RUN groupadd --gid 1001 nodejs && \
 
 # 安装后端依赖
 COPY server/package*.json ./server/
-RUN npm config set registry https://registry.npmmirror.com && \
-    cd server && npm ci --production
+RUN cd server && npm install --production
 
 # 复制后端源码
 COPY server/ ./server/
