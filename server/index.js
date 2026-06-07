@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
+import { v2 as cloudinary } from "cloudinary";
 import { initDB } from "./db.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -16,6 +17,22 @@ const PORT = process.env.PORT || 3001;
 
 // 数据库
 const db = initDB();
+
+// Cloudinary 配置（从环境变量读取）
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// 上传文件到 Cloudinary
+async function uploadToCloudinary(filePath, resourceType = "auto") {
+  const result = await cloudinary.uploader.upload(filePath, {
+    resource_type: resourceType,
+    folder: "chinese-food",
+  });
+  return result.secure_url;
+}
 
 // 密码哈希（与前端历史版本兼容）
 function hashPassword(pwd) {
@@ -115,10 +132,11 @@ app.put("/api/profile/:phone", (req, res) => {
 });
 
 // 上传头像
-app.post("/api/profile/:phone/avatar", upload.single("avatar"), (req, res) => {
+app.post("/api/profile/:phone/avatar", upload.single("avatar"), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: "未上传文件" });
-    const avatarUrl = `/uploads/${req.file.filename}`;
+    const avatarUrl = await uploadToCloudinary(req.file.path, "image");
+    fs.unlinkSync(req.file.path); // 删除本地临时文件
     db.prepare("UPDATE users SET avatar = ? WHERE phone = ?").run(avatarUrl, req.params.phone);
     res.json({ success: true, avatar: avatarUrl });
   } catch (err) {
@@ -326,11 +344,19 @@ app.get("/api/submissions", (req, res) => {
   }
 });
 
-app.post("/api/submissions", upload.fields([{ name: "images", maxCount: 10 }, { name: "videos", maxCount: 5 }]), (req, res) => {
+app.post("/api/submissions", upload.fields([{ name: "images", maxCount: 10 }, { name: "videos", maxCount: 5 }]), async (req, res) => {
   try {
     const { author, title, description, region, tags, userId, isAnonymous, isUserCreated } = req.body;
-    const imageUrls = (req.files?.images || []).map((f) => `/uploads/${f.filename}`);
-    const videoUrls = (req.files?.videos || []).map((f) => `/uploads/${f.filename}`);
+    const imageUrls = await Promise.all((req.files?.images || []).map(async (f) => {
+      const url = await uploadToCloudinary(f.path, "image");
+      fs.unlinkSync(f.path);
+      return url;
+    }));
+    const videoUrls = await Promise.all((req.files?.videos || []).map(async (f) => {
+      const url = await uploadToCloudinary(f.path, "video");
+      fs.unlinkSync(f.path);
+      return url;
+    }));
     const id = `sub-${Date.now()}`;
     const createdAt = new Date().toISOString().split("T")[0];
     db.prepare(`INSERT INTO submissions VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(
@@ -339,7 +365,10 @@ app.post("/api/submissions", upload.fields([{ name: "images", maxCount: 10 }, { 
       region || "其他", 0, "[]", createdAt, isUserCreated === "true" ? 1 : 0, isAnonymous === "true" ? 1 : 0, "pending", userId || null
     );
     res.json({ success: true, id });
-  } catch (err) { res.status(500).json({ error: "创建作品失败" }); }
+  } catch (err) {
+    console.error("创建作品失败:", err);
+    res.status(500).json({ error: "创建作品失败" });
+  }
 });
 
 app.put("/api/submissions/:id", (req, res) => {
