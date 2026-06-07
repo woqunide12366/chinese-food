@@ -1,0 +1,43 @@
+{
+  "envId": "chinesefood-d2gylcicj48fe6762",
+  "region": "ap-shanghai",
+  "functionRoot": "cloudfunctions",
+  "functions": [
+    {
+      "name": "app",
+      "timeout": 60,
+      "handler": "index.main",
+      "runtime": "Nodejs18.15",
+      "envVariables": {
+        "NODE_ENV": "production"
+      }
+    }
+  ],
+  "hosting": {
+    "dir": "./dist",
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "function": "app",
+        "type": "function"
+      },
+      {
+        "source": "/uploads/**",
+        "function": "app",
+        "type": "function"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html",
+        "type": "200"
+      }
+    ]
+  },
+  "app": {
+    "serviceName": "food",
+    "framework": "vite",
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
+    "outputDir": "dist"
+  }
+}

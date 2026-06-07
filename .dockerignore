@@ -1,0 +1,15 @@
+node_modules
+server/node_modules
+dist
+data
+uploads
+backups
+.git
+.gitignore
+.env
+*.md
+cloudfunctions
+cloudbaserc.json
+deploy.bat
+.vscode
+.idea
