@@ -1,0 +1,58 @@
+import type { Message } from "../types";
+
+export const messages: Message[] = [
+  {
+    id: "msg-1",
+    type: "guestbook",
+    name: "美食爱好者小王",
+    content: "网站做得太棒了！古法菜系的介绍让我大开眼界，原来东坡肉还有这么有趣的历史故事。希望能多更新一些家常菜的做法！",
+    createdAt: "2024-03-10",
+    status: "approved",
+  },
+  {
+    id: "msg-2",
+    type: "submission",
+    name: "厨房新手小李",
+    content: "我想投稿一道家常的番茄炒蛋，虽然简单但是很多人做不好。我的秘诀是番茄要先炒出汁，蛋液里加一点水淀粉会更嫩滑。",
+    dishName: "番茄炒蛋",
+    contact: "xiaoli@example.com",
+    createdAt: "2024-03-08",
+    status: "approved",
+  },
+  {
+    id: "msg-3",
+    type: "question",
+    name: "想学做菜的阿明",
+    content: "请问做麻婆豆腐的时候，豆腐总是容易碎，有什么技巧可以让豆腐保持完整吗？",
+    reply: "豆腐焯水时加盐可以让蛋白质凝固，炒的时候用锅铲背面轻轻推动而不是翻炒，也可以选用嫩度适中的北豆腐。",
+    createdAt: "2024-03-05",
+    status: "approved",
+  },
+  {
+    id: "msg-4",
+    type: "guestbook",
+    name: "老饕张先生",
+    content: "作为一个吃了几十年中餐的人，这个网站的分类很清晰，古法菜专区很有特色。建议增加一个'时令菜'板块，按季节推荐菜品。",
+    createdAt: "2024-03-01",
+    status: "approved",
+  },
+  {
+    id: "msg-5",
+    type: "question",
+    name: "烹饪学院学生",
+    content: "佛跳墙的家常简化版，如果没有鱼翅可以用什么替代？干贝和海参需要泡发多久？",
+    reply: "鱼翅可用干贝或花胶替代，干贝冷水泡发4小时即可，海参需要提前2天泡发，每天换水。",
+    createdAt: "2024-02-28",
+    status: "approved",
+  },
+  {
+    id: "msg-6",
+    type: "submission",
+    name: "川菜迷小陈",
+    content: "分享一个水煮鱼的改良做法：用龙利鱼代替草鱼，刺少肉嫩，更适合家庭制作。配菜可以加豆芽、莴笋、木耳，最后泼油时加一勺花椒油更香。",
+    dishName: "水煮龙利鱼",
+    contact: "chen@example.com",
+    createdAt: "2024-02-25",
+    status: "approved",
+  },
+];

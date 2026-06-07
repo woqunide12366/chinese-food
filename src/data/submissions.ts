@@ -1,0 +1,66 @@
+import type { Submission } from "../types/submission";
+
+export const submissions: Submission[] = [
+  {
+    id: "sub-1",
+    author: "美食达人小王",
+    avatar: "",
+    title: "家常版麻婆豆腐",
+    description: "今天尝试做了麻婆豆腐，虽然不够正宗但家人都说好吃！豆腐嫩滑，麻辣鲜香，配米饭绝了。",
+    images: ["/images/chuangcai/mpdf.jpg"],
+    videos: [],
+    tags: ["川菜", "家常菜", "豆腐"],
+    region: "四川",
+    likes: 128,
+    comments: [
+      {
+        id: "c1",
+        author: "川菜爱好者",
+        content: "看起来很有食欲！花椒面是灵魂",
+        createdAt: "2024-06-10",
+      },
+    ],
+    createdAt: "2024-06-09",
+  },
+  {
+    id: "sub-2",
+    author: "厨房新手",
+    avatar: "",
+    title: "第一次做东坡肉",
+    description: "按照古法做的东坡肉，用了黄酒慢炖3小时，肥而不腻，入口即化！",
+    images: ["/images/浙菜/dpr.jpg"],
+    videos: [],
+    tags: ["浙菜", "红烧肉", "古法"],
+    region: "浙江",
+    likes: 256,
+    comments: [],
+    createdAt: "2024-06-08",
+  },
+  {
+    id: "sub-3",
+    author: "粤菜师傅",
+    avatar: "",
+    title: "清蒸鲈鱼做法分享",
+    description: "清蒸鲈鱼最重要的是火候和蒸鱼豉油。这条鱼蒸了8分钟，鱼肉刚好断生，鲜嫩无比。",
+    images: ["/images/yuecai/qzly.jpg"],
+    videos: ["/videos/cooking-demo.mp4"],
+    tags: ["粤菜", "海鲜", "清蒸"],
+    region: "广东",
+    likes: 89,
+    comments: [
+      {
+        id: "c2",
+        author: "爱吃鱼的猫",
+        content: "蒸8分钟刚好！我以前总是蒸老了",
+        createdAt: "2024-06-09",
+      },
+      {
+        id: "c3",
+        author: "广东阿妈",
+        content: "记得淋热油激香葱花",
+        createdAt: "2024-06-09",
+      },
+    ],
+    createdAt: "2024-06-07",
+  },
+];
